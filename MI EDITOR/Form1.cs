@@ -63,26 +63,25 @@ namespace MI_EDITOR
 
         private void guardarComoToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            //Se crea el objeto SaveFileDialog para guardar el archivo
             SaveFileDialog save = new SaveFileDialog();
-            System.IO.StreamWriter myStreamWriter = null;
-            save.Filter = "Archivos de texto (*.txt)|*.txt|HTML (*.html)|*.html|Todos los archivos";
-            save.Title = "Guardar archivo";
-            save.CheckPathExists = true;
-            save.Title = "Guardar archivo";
-            save.ShowDialog(this);
-            try
-            {
-                myStreamWriter = System.IO.File.AppendText(save.FileName);
-                myStreamWriter.Write(richTextBox1.Text);
-                myStreamWriter.Flush();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error al guardar el archivo: " + ex.Message);
 
+            save.Filter = "Archivos de texto (*.txt)|*.txt|Todos los archivos (*.*)|*.*";
+            save.Title = "Guardar archivo";
+
+            if (save.ShowDialog() == DialogResult.OK)
+            {
+                try
+                {
+                    System.IO.File.WriteAllText(save.FileName, richTextBox1.Text);
+                    MessageBox.Show("Archivo guardado correctamente.");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error al guardar el archivo: " + ex.Message);
+                }
             }
         }
+
 
         private void salirToolStripMenuItem2_Click(object sender, EventArgs e)
         {
@@ -91,12 +90,20 @@ namespace MI_EDITOR
 
         private void colorToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            richTextBox1.Redo();//atras
+            //atras
+            if (richTextBox1.CanUndo)
+            {
+                richTextBox1.Undo();
+            }
         }
 
         private void fuenteToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            richTextBox1.Redo();//adelante
+            //adelante
+            if (richTextBox1.CanRedo)
+            {
+                richTextBox1.Redo();
+            }
         }
 
         private void guardarComoToolStripMenuItem_Click(object sender, EventArgs e)
@@ -139,6 +146,16 @@ namespace MI_EDITOR
         private void pegarToolStripMenuItem_Click(object sender, EventArgs e)
         {
             richTextBox1.Paste();
+        }
+
+        private void seleccionarTodoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            richTextBox1.SelectAll();
+        }
+
+        private void borrarTodoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            richTextBox1.Clear();
         }
     }
 }
